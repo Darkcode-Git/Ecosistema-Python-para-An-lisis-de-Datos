@@ -4,12 +4,13 @@ https://jsonplaceholder.typicode.com/users
 
 Pasos del pipeline:
 1. Obtener datos de usuarios desde la API.
-2. Filtrar usuarios cuyo nombre de empresa contenga cierta letra.
+2. Filtrar usuarios que tienen sitio web registrado.
 3. Transformar los datos extrayendo campos relevantes.
 4. Ordenar usuarios por nombre.
 5. Mostrar el resultado final.
 """
 
+import urllib.error
 import urllib.request
 import json
 
@@ -20,8 +21,12 @@ BASE_URL = "https://jsonplaceholder.typicode.com"
 def obtener_usuarios():
     """Paso 1: Ingesta - obtener lista de usuarios desde la API."""
     url = f"{BASE_URL}/users"
-    with urllib.request.urlopen(url) as respuesta:
-        datos = json.loads(respuesta.read().decode("utf-8"))
+    try:
+        with urllib.request.urlopen(url) as respuesta:
+            datos = json.loads(respuesta.read().decode("utf-8"))
+    except urllib.error.URLError as e:
+        print(f"Error al conectar con la API: {e.reason}")
+        return []
     print(f"[1] Usuarios obtenidos: {len(datos)}")
     return datos
 
